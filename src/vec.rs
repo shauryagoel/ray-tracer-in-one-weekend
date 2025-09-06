@@ -1,11 +1,11 @@
+use std::ops::Mul;
+
 /// Represent a collection of 3 values
 /// It can represent a point in 3D space or RGB values of a color
+#[derive(Clone, Copy)]
 pub struct Vec3 {
     e: [f64; 3],
 }
-
-/// Represent points in 3D space
-type Point3 = Vec3;
 
 impl Vec3 {
     pub fn new(e0: f64, e1: f64, e2: f64) -> Self {
@@ -36,5 +36,21 @@ impl Vec3 {
 impl Default for Vec3 {
     fn default() -> Self {
         Vec3 { e: [0.0, 0.0, 0.0] }
+    }
+}
+
+impl Mul<f64> for Vec3 {
+    type Output = Self;
+
+    fn mul(self, t: f64) -> Self::Output {
+        Self::new(self.x() * t, self.y() * t, self.z() * t)
+    }
+}
+
+impl Mul<Vec3> for f64 {
+    type Output = Vec3;
+
+    fn mul(self, other: Vec3) -> Self::Output {
+        Vec3::new(self * other.x(), self * other.y(), self * other.z())
     }
 }

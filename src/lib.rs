@@ -1,5 +1,9 @@
 mod color;
-mod vec3;
+mod point;
+mod ray;
+mod vec;
 
 pub use color::Color;
-pub use vec3::Vec3;
+pub use point::Point3;
+pub use ray::Ray;
+pub use vec::Vec3;
