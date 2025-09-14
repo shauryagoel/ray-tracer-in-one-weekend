@@ -34,3 +34,27 @@ impl Add<Vec3> for Point3 {
         )
     }
 }
+
+impl Sub<Point3> for Point3 {
+    type Output = Vec3;
+
+    fn sub(self, other: Self) -> Self::Output {
+        Vec3::new(
+            self.x() - other.x(),
+            self.y() - other.y(),
+            self.z() - other.z(),
+        )
+    }
+}
+
+impl Sub<Point3> for Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, other: Point3) -> Self::Output {
+        Vec3::new(
+            self.x() - other.x(),
+            self.y() - other.y(),
+            self.z() - other.z(),
+        )
+    }
+}

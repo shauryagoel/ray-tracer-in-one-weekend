@@ -1,10 +1,11 @@
 use crate::vec::Vec3;
 use std::io::Write;
+use std::ops::{Add, Mul};
 
 /// Represent RGB color using Vec3
 ///
 /// Vec3 components should be between 0 and 1
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Color(Vec3);
 
 impl Color {
@@ -12,23 +13,23 @@ impl Color {
         Color(Vec3::new(e0, e1, e2))
     }
 
-    pub fn x(&self) -> f64 {
+    pub fn r(&self) -> f64 {
         self.0.x()
     }
 
-    pub fn y(&self) -> f64 {
+    pub fn g(&self) -> f64 {
         self.0.y()
     }
 
-    pub fn z(&self) -> f64 {
+    pub fn b(&self) -> f64 {
         self.0.z()
     }
 
     /// Write the color to the output stream
     pub fn write_color<T: Write>(output_stream: &mut T, color: Color) {
-        let r = color.x();
-        let g = color.y();
-        let b = color.z();
+        let r = color.r();
+        let g = color.g();
+        let b = color.b();
 
         // Translate [0,1] component values to the byte range [0, 255]
         // This is done because when r = 0.99999, (255 * r) as u8 -> 254, which is incorrect
@@ -40,5 +41,25 @@ impl Color {
         //     .write_all(&[rbyte, b' ', gbyte, b' ', bbyte, b'\n'])
         //     .unwrap();
         writeln!(output_stream, "{rbyte} {gbyte} {bbyte}").unwrap();
+    }
+}
+
+impl Add<Color> for Color {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self::Output {
+        Color::new(
+            self.r() + other.r(),
+            self.g() + other.g(),
+            self.b() + other.b(),
+        )
+    }
+}
+
+impl Mul<Color> for f64 {
+    type Output = Color;
+
+    fn mul(self, other: Color) -> Self::Output {
+        Color::new(self * other.r(), self * other.g(), self * other.b())
     }
 }

@@ -1,6 +1,6 @@
 # Introduction
 
-This document contains concepts defined and introduced in the [blog](https://raytracing.github.io/books/RayTracingInOneWeekend.html) separated chapter and section wise.
+This document contains concepts defined and introduced in the [blog](https://raytracing.github.io/books/RayTracingInOneWeekend.html) for many chapters and sections.
 
 ## Chapter 2
 
@@ -45,8 +45,8 @@ $$
 $$
 \begin{aligned}
 \text{where,} \quad & \mathbf{P} && \text{is a 3D position along a line in 3D} \\
-                     & \mathbf{b} && \text{is the ray direction} \\
-                     & \mathbf{t} && \text{is a real number (double)}
+                    & \mathbf{b} && \text{is the ray direction} \\
+                    & \mathbf{t} && \text{is a real number (double)}
 \end{aligned}
 $$
 
@@ -55,3 +55,31 @@ For different values of $t$, we can move along the line-
 - If $t$ is allowed to go to all real values (positive and negative), then $\mathbf{P}$ represents a line
 
 - If $t$ is allowed to be only positive, then $\mathbf{P}$ represents a ray
+
+### Section 4.2
+
+A Ray Tracer basically sends rays through pixels and computes the color seen in the direction of those rays. There are 3 steps are-
+
+1. Calculate the ray from the "eye" (camera) through the pixel
+2. Determine which objects the ray intersects
+3. Compute a color for the closest intersection point
+
+```math
+aspect\_ratio = \frac{width}{height}
+```
+
+We can keep the `aspect_ratio` fixed, and vary the `width`, to get the `height`. This way we can scale up or down the image. We must ensure that the new height is at least 1.
+
+**Viewport**: It is a virtual rectangle in the 3D world that contains the grid of image pixel locations.
+
+If pixels are spaced the same distance horizontally as they are vertically, the viewport that bounds it will have the same aspect ratio as the rendered image. The distance between two adjacent pixels is called **Pixel Spacing**. Square pixels are the standard.
+
+**Camera** (eye): A point in 3D space from which all scene rays will originate.
+
+**Focal Length**: The distance between the camera center point and the viewport center point.
+
+The vector from the camera center to the viewport center will be orthogonal to the viewport center.
+
+We will keep the camera at the origin and viewport at $z=-1$ and the height of viewport to be of 2 units.
+
+![A description of the image](https://raytracing.github.io/images/fig-1.04-pixel-grid.jpg)

@@ -1,4 +1,4 @@
-use std::ops::{Div, Mul};
+use std::ops::{Add, Div, Mul, Sub};
 
 /// Represent a collection of 3 values
 /// It can represent a point in 3D space or RGB values of a color via the "New Type Pattern"
@@ -29,13 +29,41 @@ impl Vec3 {
     }
 
     pub fn length_squared(&self) -> f64 {
-        self.e[0] * self.e[0] + self.e[1] * self.e[1] * self.e[2] * self.e[2]
+        self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
+    }
+
+    pub fn unit_vector(&self) -> Self {
+        self.clone() / self.length()
     }
 }
 
 impl Default for Vec3 {
     fn default() -> Self {
         Vec3 { e: [0.0, 0.0, 0.0] }
+    }
+}
+
+impl Add<Vec3> for Vec3 {
+    type Output = Self;
+
+    fn add(self, other: Vec3) -> Self::Output {
+        Self::new(
+            self.x() + other.x(),
+            self.y() + other.y(),
+            self.z() + other.z(),
+        )
+    }
+}
+
+impl Sub<Vec3> for Vec3 {
+    type Output = Self;
+
+    fn sub(self, other: Vec3) -> Self::Output {
+        Self::new(
+            self.x() - other.x(),
+            self.y() - other.y(),
+            self.z() - other.z(),
+        )
     }
 }
 
