@@ -1,8 +1,8 @@
-use std::ops::Mul;
+use std::ops::{Div, Mul};
 
 /// Represent a collection of 3 values
-/// It can represent a point in 3D space or RGB values of a color
-#[derive(Clone, Copy)]
+/// It can represent a point in 3D space or RGB values of a color via the "New Type Pattern"
+#[derive(Clone)]
 pub struct Vec3 {
     e: [f64; 3],
 }
@@ -52,5 +52,13 @@ impl Mul<Vec3> for f64 {
 
     fn mul(self, other: Vec3) -> Self::Output {
         Vec3::new(self * other.x(), self * other.y(), self * other.z())
+    }
+}
+
+impl Div<f64> for Vec3 {
+    type Output = Self;
+
+    fn div(self, t: f64) -> Self::Output {
+        Self::new(self.x() / t, self.y() / t, self.z() / t)
     }
 }

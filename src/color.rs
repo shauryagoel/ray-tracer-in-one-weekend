@@ -1,12 +1,29 @@
-use crate::vec;
+use crate::vec::Vec3;
 use std::io::Write;
 
 /// Represent RGB color using Vec3
 ///
 /// Vec3 components should be between 0 and 1
-pub type Color = vec::Vec3;
+#[derive(Clone)]
+pub struct Color(Vec3);
 
 impl Color {
+    pub fn new(e0: f64, e1: f64, e2: f64) -> Self {
+        Color(Vec3::new(e0, e1, e2))
+    }
+
+    pub fn x(&self) -> f64 {
+        self.0.x()
+    }
+
+    pub fn y(&self) -> f64 {
+        self.0.y()
+    }
+
+    pub fn z(&self) -> f64 {
+        self.0.z()
+    }
+
     /// Write the color to the output stream
     pub fn write_color<T: Write>(output_stream: &mut T, color: Color) {
         let r = color.x();
