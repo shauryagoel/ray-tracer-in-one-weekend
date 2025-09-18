@@ -83,3 +83,44 @@ The vector from the camera center to the viewport center will be orthogonal to t
 We will keep the camera at the origin and viewport at $z=-1$ and the height of viewport to be of 2 units.
 
 ![A description of the image](https://raytracing.github.io/images/fig-1.04-pixel-grid.jpg)
+
+## Chapter 5
+
+### Section 5.1
+
+Equation for a sphere with center $𝐂 = (C_x, C_y, C_z)$, radius $r$, and an arbitrary point $𝐏 = (x, y, z)$ is-
+
+```math
+(𝐂 - 𝐏) \cdot (𝐂 - 𝐏) = (C_x - x)^2 + (C_y - y)^2 + (C_z - z)^2 = r^2
+```
+
+To find if a ray, $𝐏(t) = 𝐐 + t \cdot 𝐝$, hits the sphere-
+
+$$
+\begin{gathered}
+(𝐂 - (𝐐 + t𝐝)) \cdot (𝐂 - (𝐐 + t𝐝)) = r^2 \\
+\implies t^2 𝐝 \cdot 𝐝 - 2t 𝐝 \cdot (𝐂 - 𝐐) + (𝐂 - 𝐐) \cdot (𝐂 - 𝐐) - r^2 = 0
+\end{gathered}
+$$
+
+This can be seen as a quadratic equation, $ax^2 + bx + c = 0$, which can be solved using the quadratic formula-
+
+```math
+\dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+```
+
+Using this to solve for $t$ would require the following values to be substituted to the quadratic formula-
+
+$$
+\begin{aligned}
+a &= 𝐝 \cdot 𝐝 \\
+b &= -2𝐝 \cdot (𝐂 - 𝐐) \\
+c &= (𝐂 - 𝐐) \cdot (𝐂 - 𝐐) - r^2
+\end{aligned}
+$$
+
+The square root part in the quadratic formula can be-
+
+- positive: meaning two real solutions - ray passes in between the sphere
+- negative: meaning no real solution - ray does not touch the sphere
+- zero: meaning one real solution - ray is tangent to the sphere

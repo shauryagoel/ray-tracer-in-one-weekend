@@ -24,12 +24,26 @@ impl Vec3 {
         self.e[2]
     }
 
-    pub fn length(&self) -> f64 {
-        self.length_squared().sqrt()
+    /// Finding dot product between vectors
+    pub fn dot(&self, other: &Self) -> f64 {
+        self.x() * other.x() + self.y() * other.y() + self.z() * other.z()
     }
 
-    pub fn length_squared(&self) -> f64 {
+    /// Finding cross product between vectors
+    pub fn cross(&self, other: &Self) -> Self {
+        Self::new(
+            self.y() * other.z() - self.z() * other.y(),
+            self.z() * other.x() - self.x() * other.z(),
+            self.x() * other.y() - self.y() * other.x(),
+        )
+    }
+
+    fn length_squared(&self) -> f64 {
         self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
+    }
+
+    pub fn length(&self) -> f64 {
+        self.length_squared().sqrt()
     }
 
     pub fn unit_vector(&self) -> Self {
