@@ -124,3 +124,9 @@ The square root part in the quadratic formula can be-
 - positive: meaning two real solutions - ray passes in between the sphere
 - negative: meaning no real solution - ray does not touch the sphere
 - zero: meaning one real solution - ray is tangent to the sphere
+
+## Chapter 6
+
+### Section 6.1
+
+**Surface Normal**: A vector that is perpendicular to a surface at the point of intersection. It should be normalized as many algorithms require it to be normalized.
