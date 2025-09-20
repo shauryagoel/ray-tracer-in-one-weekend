@@ -129,4 +129,10 @@ The square root part in the quadratic formula can be-
 
 ### Section 6.1
 
-**Surface Normal**: A vector that is perpendicular to a surface at the point of intersection. It should be normalized as many algorithms require it to be normalized.
+**Surface Normal**: A vector that is perpendicular to a surface at the point of intersection. It can be outward or inward to the surface. It should be normalized as many algorithms require it to be normalized.
+
+### Section 6.4
+
+We need to determine from which side of the object's surface a ray is coming from: from outside or inside. This is important as there are objects which are rendered differently on each side, like text on a two-sided sheet of paper, or glass balls (they have an inside and an outside).
+
+The author took a preference to store surface normal which is against the incident ray direction- if the ray is incident on the object from outside, then, the normal will point outwards, and if the ray is inside the object, then, normal will point inwards. This is because we want to determine the side of the surface at the time of geometry intersection or at the time of coloring (of the material). The book has more materials than the geometry types, so they chose the determination at geometry time as it is less work.

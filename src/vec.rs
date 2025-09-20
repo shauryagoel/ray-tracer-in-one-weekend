@@ -1,4 +1,4 @@
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 /// Represent a collection of 3 values
 /// It can represent a point in 3D space or RGB values of a color via the "New Type Pattern"
@@ -24,12 +24,12 @@ impl Vec3 {
         self.e[2]
     }
 
-    /// Finding dot product between vectors
+    /// Find dot product between vectors
     pub fn dot(&self, other: &Self) -> f64 {
         self.x() * other.x() + self.y() * other.y() + self.z() * other.z()
     }
 
-    /// Finding cross product between vectors
+    /// Find cross product between vectors
     pub fn cross(&self, other: &Self) -> Self {
         Self::new(
             self.y() * other.z() - self.z() * other.y(),
@@ -54,6 +54,14 @@ impl Vec3 {
 impl Default for Vec3 {
     fn default() -> Self {
         Vec3 { e: [0.0, 0.0, 0.0] }
+    }
+}
+
+impl Neg for Vec3 {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self::new(-self.x(), -self.y(), -self.z())
     }
 }
 
