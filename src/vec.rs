@@ -2,7 +2,7 @@ use std::ops::{Add, Div, Mul, Neg, Sub};
 
 /// Represent a collection of 3 values
 /// It can represent a point in 3D space or RGB values of a color via the "New Type Pattern"
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Vec3 {
     e: [f64; 3],
 }
@@ -48,12 +48,6 @@ impl Vec3 {
 
     pub fn unit_vector(&self) -> Self {
         self.clone() / self.length()
-    }
-}
-
-impl Default for Vec3 {
-    fn default() -> Self {
-        Vec3 { e: [0.0, 0.0, 0.0] }
     }
 }
 

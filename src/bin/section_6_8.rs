@@ -1,13 +1,13 @@
 use core::f64;
 use ray_tracer_in_one_weekend::{
-    Color, HitRecord, Hittable, HittableList, Point3, Ray, Sphere, Vec3,
+    Color, HitRecord, Hittable, HittableList, Interval, Point3, Ray, Sphere, Vec3,
 };
 use std::io::{self, Write};
 use std::rc::Rc;
 
 fn ray_color(r: Ray, world: &HittableList) -> Color {
     let mut rec: HitRecord = Default::default();
-    if world.hit(&r, 0.0, f64::MAX, &mut rec) {
+    if world.hit(&r, Interval::new(0.0, f64::MAX), &mut rec) {
         let new_r = 0.5 * (rec.normal.x() + 1.0);
         let new_g = 0.5 * (rec.normal.y() + 1.0);
         let new_b = 0.5 * (rec.normal.z() + 1.0);
