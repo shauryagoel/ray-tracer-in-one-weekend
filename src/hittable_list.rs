@@ -1,6 +1,7 @@
 use crate::{HitRecord, hittable::Hittable, ray::Ray};
 use std::rc::Rc;
 
+#[derive(Default)]
 pub struct HittableList {
     objects: Vec<Rc<dyn Hittable>>,
 }

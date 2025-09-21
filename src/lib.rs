@@ -7,7 +7,7 @@ mod sphere;
 mod vec;
 
 pub use color::Color;
-pub use hittable::HitRecord;
+pub use hittable::{HitRecord, Hittable};
 pub use hittable_list::HittableList;
 pub use point::Point3;
 pub use ray::Ray;
