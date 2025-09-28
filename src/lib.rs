@@ -6,6 +6,7 @@ mod interval;
 mod point;
 mod ray;
 mod sphere;
+mod utils;
 mod vec;
 
 pub use camera::Camera;

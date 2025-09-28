@@ -28,6 +28,11 @@ impl Interval {
     pub fn universe() -> Self {
         Self::new(f64::MIN, f64::MAX)
     }
+
+    /// Clamp the value of `x` within the interval
+    pub fn clamp(&self, x: f64) -> f64 {
+        x.clamp(self.min, self.max)
+    }
 }
 
 impl Default for Interval {

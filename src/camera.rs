@@ -1,17 +1,20 @@
-use crate::{Color, HitRecord, Hittable, HittableList, Interval, Point3, Ray, Vec3};
+use crate::{Color, HitRecord, Hittable, HittableList, Interval, Point3, Ray, Vec3, utils};
 use std::io::Write;
 
-#[derive(Default)]
 pub struct Camera {
     /// Ratio of image width to image height
     pub aspect_ratio: f64,
     /// Rendered image width in pixel count
     pub image_width: usize,
+    /// Count of random samples for each pixel
+    pub samples_per_pixel: usize,
     /// Stream to write the rendered image
     // pub output_stream: Box<dyn Write>,
 
     // Rendered image height
     image_height: usize,
+    // Color scale factor for a sum of pixel samples (is inverse of samples_per_pixel)
+    pixel_samples_scale: f64,
     // Camera center
     camera_center: Point3,
     // Location of pixel (0, 0)
@@ -23,36 +26,14 @@ pub struct Camera {
 }
 
 impl Camera {
-    /// Renders the world to the `output_stream`
-    pub fn render<T: Write>(&mut self, world: &HittableList, output_stream: &mut T) {
-        self.initialise();
-
-        writeln!(
-            output_stream,
-            "P3\n{} {}\n255",
-            self.image_width, self.image_height
-        )
-        .unwrap();
-
-        for j in 0..self.image_height {
-            for i in 0..self.image_width {
-                let pixel_location = self.pixel00_loc.clone()
-                    + (i as f64 * self.pixel_delta_u.clone())
-                    + (j as f64 * self.pixel_delta_v.clone());
-                let ray_direction = pixel_location - self.camera_center.clone();
-                let r = Ray::new(self.camera_center.clone(), ray_direction);
-                let pixel_color = self.ray_color(&r, world);
-                Color::write_color(output_stream, pixel_color);
-            }
-        }
-    }
-
     fn initialise(&mut self) {
         // Calculate the image height
         self.image_height = (self.image_width as f64 / self.aspect_ratio) as usize;
         let image_height: usize = usize::max(self.image_height, 1);
         let image_height_f64 = image_height as f64;
         let image_width_f64 = self.image_width as f64;
+
+        self.pixel_samples_scale = 1.0 / self.samples_per_pixel as f64;
 
         // Camera center
         self.camera_center = Point3::default();
@@ -79,6 +60,54 @@ impl Camera {
             viewport_upper_left + 0.5 * (self.pixel_delta_u.clone() + self.pixel_delta_v.clone());
     }
 
+    /// Renders the world to the `output_stream`
+    pub fn render<T: Write>(&mut self, world: &HittableList, output_stream: &mut T) {
+        self.initialise();
+
+        writeln!(
+            output_stream,
+            "P3\n{} {}\n255",
+            self.image_width, self.image_height
+        )
+        .unwrap();
+
+        for j in 0..self.image_height {
+            for i in 0..self.image_width {
+                // Sample points around pixels
+                let mut pixel_color = Color::default();
+                for _ in 0..self.samples_per_pixel {
+                    let r: Ray = self.get_ray(i, j);
+                    pixel_color += self.ray_color(&r, world);
+                }
+
+                Color::write_color(output_stream, self.pixel_samples_scale * pixel_color);
+            }
+        }
+    }
+
+    // Get a ray originating from the camera center (origin) and directed at a
+    // randomly sampled point around the pixel location (i, j)
+    fn get_ray(&self, i: usize, j: usize) -> Ray {
+        let offset = Camera::sample_square();
+        let pixel_sample = self.pixel00_loc.clone()
+            + ((i as f64 + offset.x()) * self.pixel_delta_u.clone())
+            + ((j as f64 + offset.y()) * self.pixel_delta_v.clone());
+
+        let ray_origin = self.camera_center.clone();
+        let ray_direction = pixel_sample - ray_origin.clone();
+        Ray::new(ray_origin, ray_direction)
+    }
+
+    // Returns a random point in the unit square from [-0.5, -0.5] to [0.5, 0.5]
+    fn sample_square() -> Vec3 {
+        Vec3::new(
+            utils::random_f64(0.0, 1.0) - 0.5,
+            utils::random_f64(0.0, 1.0) - 0.5,
+            0.0,
+        )
+    }
+
+    // Get the color of the closest object in the `world` when passing `ray` through the world
     fn ray_color(&self, r: &Ray, world: &HittableList) -> Color {
         let mut rec: HitRecord = Default::default();
         if world.hit(r, Interval::new(0.0, f64::MAX), &mut rec) {
@@ -93,5 +122,21 @@ impl Camera {
         let white_color = Color::new(1.0, 1.0, 1.0);
         let blue_color = Color::new(0.5, 0.7, 1.0);
         (1.0 - alpha) * white_color + alpha * blue_color
+    }
+}
+
+impl Default for Camera {
+    fn default() -> Self {
+        Self {
+            aspect_ratio: 1.0,
+            image_width: 100,
+            samples_per_pixel: 10,
+            image_height: Default::default(),
+            pixel_samples_scale: Default::default(),
+            camera_center: Default::default(),
+            pixel00_loc: Default::default(),
+            pixel_delta_u: Default::default(),
+            pixel_delta_v: Default::default(),
+        }
     }
 }
