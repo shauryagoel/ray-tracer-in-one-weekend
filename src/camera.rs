@@ -8,6 +8,8 @@ pub struct Camera {
     pub image_width: usize,
     /// Count of random samples for each pixel
     pub samples_per_pixel: usize,
+    /// Max number of ray bounces into the scene
+    pub max_depth: usize,
     /// Stream to write the rendered image
     // pub output_stream: Box<dyn Write>,
 
@@ -77,7 +79,7 @@ impl Camera {
                 let mut pixel_color = Color::default();
                 for _ in 0..self.samples_per_pixel {
                     let r: Ray = self.get_ray(i, j);
-                    pixel_color += self.ray_color(&r, world);
+                    pixel_color += self.ray_color(&r, self.max_depth, world);
                 }
 
                 Color::write_color(output_stream, self.pixel_samples_scale * pixel_color);
@@ -108,13 +110,16 @@ impl Camera {
     }
 
     // Get the color of the closest object in the `world` when passing `ray` through the world
-    fn ray_color(&self, r: &Ray, world: &HittableList) -> Color {
+    fn ray_color(&self, r: &Ray, depth: usize, world: &HittableList) -> Color {
+        // If ray bounce limit is exceeded, no more light is gathered
+        if depth == 0 {
+            return Color::new(0.0, 0.0, 0.0);
+        }
         let mut rec: HitRecord = Default::default();
-        if world.hit(r, Interval::new(0.0, f64::MAX), &mut rec) {
-            let new_r = 0.5 * (rec.normal.x() + 1.0);
-            let new_g = 0.5 * (rec.normal.y() + 1.0);
-            let new_b = 0.5 * (rec.normal.z() + 1.0);
-            return Color::new(new_r, new_g, new_b);
+        // Solve the "Acne Problem"
+        if world.hit(r, Interval::new(0.001, f64::MAX), &mut rec) {
+            let direction = Vec3::random_on_hemisphere(&rec.normal);
+            return 0.5 * self.ray_color(&Ray::new(rec.p, direction), depth - 1, world);
         }
 
         let unit_direction = r.direction().unit_vector();
@@ -131,6 +136,7 @@ impl Default for Camera {
             aspect_ratio: 1.0,
             image_width: 100,
             samples_per_pixel: 10,
+            max_depth: 10,
             image_height: Default::default(),
             pixel_samples_scale: Default::default(),
             camera_center: Default::default(),

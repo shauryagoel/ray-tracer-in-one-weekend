@@ -13,7 +13,7 @@ pub trait Hittable {
 }
 
 impl HitRecord {
-    /// Set the front_face and the normal vector of `HitRecord`
+    /// Set the `front_face` and the normal vector of `HitRecord`
     /// `outward_normal` should be a unit vector
     ///
     /// The ray and the surface normal are opposite to each other

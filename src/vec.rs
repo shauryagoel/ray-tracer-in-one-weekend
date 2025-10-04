@@ -1,3 +1,4 @@
+use crate::utils;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 /// Represent a collection of 3 values
@@ -48,6 +49,38 @@ impl Vec3 {
 
     pub fn unit_vector(&self) -> Self {
         self.clone() / self.length()
+    }
+
+    /// Generate a random vector with value of all components between `min` and `max`
+    pub fn random(min: f64, max: f64) -> Self {
+        Self::new(
+            utils::random_f64(min, max),
+            utils::random_f64(min, max),
+            utils::random_f64(min, max),
+        )
+    }
+
+    // Generate a random unit vector on a sphere
+    fn random_unit_vector() -> Self {
+        loop {
+            let p = Vec3::random(-1.0, 1.0);
+            let len_squared = p.length_squared();
+            if len_squared > 1e-160 && len_squared <= 1.0 {
+                return p / len_squared.sqrt();
+            }
+        }
+    }
+
+    /// Generate a random vector on same hemisphere as the sphere normal
+    pub fn random_on_hemisphere(normal: &Vec3) -> Self {
+        let on_unit_sphere = Self::random_unit_vector();
+
+        // In the same hemisphere as the normal
+        if on_unit_sphere.dot(normal) > 0.0 {
+            on_unit_sphere
+        } else {
+            -on_unit_sphere
+        }
     }
 }
 

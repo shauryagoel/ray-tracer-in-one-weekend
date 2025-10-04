@@ -142,3 +142,17 @@ The author took a preference to store surface normal which is against the incide
 **Antialiasing**: Images which we have produced in the previous chapters have a "staircase" pattern around the edges of the objects. This is called **aliasing**. A camera would blend the edge pixels with some foreground and some background. Aliasing can be seen if we take a 8x8 grid of black and white tiles, but only if 4 rays hit it. Then, we would only see black tiles or white tiles or some odd combination. In a real world, we would see gray color, instead of sharp black or white points. This is because our eyes are doing what we want our ray tracer to do.
 
 Our ray tracer can remove the aliasing if we take multiple samples around each pixel and average them. Specifically, we randomly sample points from half pixel width and height around the pixel, and average them.
+
+## Chapter 9
+
+**Diffuse material** (also *matte*): These objects don't emit their own light, taking on the color of their surroundings, but, they modulate that with their own intrinsic color. Light rays that reflect off a diffuse surface has its direction randomized, and some part of the ray gets absorbed rather than reflected.
+
+Steps to generate a random reflected ray (which lies on the same side of hemisphere):
+
+1) Generate a random vector inside the unit sphere
+2) Normalize this vector to extend it to the sphere surface
+3) Invert the normalized vector if it fails onto the wrong hemisphere
+
+### Section 9.3
+
+**Shadow Acne**: Whenever a ray intersects with a surface, due to rounding errors in floating point calculation, the calculated intersection point will be slightly below the surface or above the surface. If the point is below the surface, the next ray could intersect with the surface again. To solve this temporarily, we ignore the intersection points which have $t < 0.01$.

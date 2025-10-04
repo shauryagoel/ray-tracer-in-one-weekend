@@ -16,7 +16,7 @@ impl Sphere {
 
 impl Hittable for Sphere {
     /// Store the information regarding the intersection of sphere in a `HitRecord` if the ray
-    /// hit the Sphere between `t_min` and `t_max`, and return true, else return false
+    /// hit the Sphere within the `Interval`, and return true, else return false
     fn hit(&self, r: &Ray, ray_t: Interval, rec: &mut HitRecord) -> bool {
         let oc = &self.center - r.origin();
         let a = r.direction().length_squared();
