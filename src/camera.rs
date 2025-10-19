@@ -122,8 +122,16 @@ impl Camera {
             // let direction = Vec3::random_on_hemisphere(&rec.normal);
 
             // Lambertian Reflection-
-            let direction = rec.normal + Vec3::random_unit_vector();
-            return 0.5 * self.ray_color(&Ray::new(rec.p, direction), depth - 1, world);
+            // let direction = rec.normal + Vec3::random_unit_vector();
+            // return 0.5 * self.ray_color(&Ray::new(rec.p, direction), depth - 1, world);
+
+            let mut scattered = Ray::default();
+            let mut attenuation = Color::default();
+            if rec.mat.scatter(&r, &rec, &mut attenuation, &mut scattered) {
+                return attenuation * self.ray_color(&scattered, depth - 1, world);
+            }
+            // Ray got absorbed into the material completely, no reflection happened
+            return Color::new(0.0, 0.0, 0.0);
         }
 
         let unit_direction = r.direction().unit_vector();

@@ -82,6 +82,17 @@ impl Vec3 {
             -on_unit_sphere
         }
     }
+
+    /// Returns true if the vector is near-zero in all dimensions
+    pub fn near_zero(&self) -> bool {
+        let epsilon = 1e-8;
+        (self.x().abs() < epsilon) && (self.y().abs() < epsilon) && (self.z().abs() < epsilon)
+    }
+
+    /// Get reflected vector given the incident ray (self) and the normal vector
+    pub fn reflect(&self, n: &Vec3) -> Vec3 {
+        self - 2.0 * self.dot(n) * n
+    }
 }
 
 impl Neg for Vec3 {
@@ -116,6 +127,18 @@ impl Sub<Vec3> for Vec3 {
     }
 }
 
+impl Sub<Vec3> for &Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, other: Vec3) -> Self::Output {
+        Vec3::new(
+            self.x() - other.x(),
+            self.y() - other.y(),
+            self.z() - other.z(),
+        )
+    }
+}
+
 impl Mul<f64> for Vec3 {
     type Output = Self;
 
@@ -128,6 +151,14 @@ impl Mul<Vec3> for f64 {
     type Output = Vec3;
 
     fn mul(self, other: Vec3) -> Self::Output {
+        Vec3::new(self * other.x(), self * other.y(), self * other.z())
+    }
+}
+
+impl Mul<&Vec3> for f64 {
+    type Output = Vec3;
+
+    fn mul(self, other: &Vec3) -> Self::Output {
         Vec3::new(self * other.x(), self * other.y(), self * other.z())
     }
 }

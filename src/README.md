@@ -165,6 +165,17 @@ To generate samples from this distribution, we add a random unit vector to the n
 
 ### Section 9.5
 
-The spheres generated before appears to be darker than they should be even though they have 50% reflectance. This is because computer programs assume that an image is **Gamma Corrected** before being written to an image file. Images that are stored to disk without any transformation are said to be in **Linear Space**, and images with transformations applied are said to be in **Gamma Space**. 
+The spheres generated before appears to be darker than they should be even though they have 50% reflectance. This is because computer programs assume that an image is **Gamma Corrected** before being written to an image file. Images that are stored to disk without any transformation are said to be in **Linear Space**, and images with transformations applied are said to be in **Gamma Space**.
 
 To solve this, we apply a transform to convert our 0 to 1 image values from Linear space to Gamma space. This means taking an exponent of $1/gamma$ for each of the R, G and B components. As a simple approximation, we use the **Gamma 2** as our transform to go from gamma space to linear space. Inverse of "gamma 2" is just a square root.
+
+## Chapter 10
+
+### Chapter 10.3
+
+**Albedo** (Latin for whiteness): It means fractional reflectance. It varies with the material color and can also vary with incident viewing direction (for glass materials).
+
+Materials-
+
+1) **Lambertian**: They scatter light in random direction and attenuate light according to its reflectance.
+2) **Metal**: The incident ray gets reflected from the surface with angle of incidence being equal to angle of reflection.

@@ -2,7 +2,7 @@ use crate::point::Point3;
 use crate::vec::Vec3;
 
 /// Represents a ray using `origin` and `direction`
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Ray {
     origin: Point3,
     direction: Vec3,
