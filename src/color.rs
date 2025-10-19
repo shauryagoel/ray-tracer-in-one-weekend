@@ -32,6 +32,11 @@ impl Color {
         let g = color.g();
         let b = color.b();
 
+        // Apply a linear to gamma transform for "gamma 2"
+        let r = Color::linear_to_gamma(r);
+        let g = Color::linear_to_gamma(g);
+        let b = Color::linear_to_gamma(b);
+
         // Translate [0,1] component values to the byte range [0, 255]
         // // This is done because when r = 0.99999, `(255 * r) as u8` = 254, which is incorrect
         // let rbyte = (255.999 * r) as u8;
@@ -48,6 +53,14 @@ impl Color {
         //     .write_all(&[rbyte, b' ', gbyte, b' ', bbyte, b'\n'])
         //     .unwrap();
         writeln!(output_stream, "{rbyte} {gbyte} {bbyte}").unwrap();
+    }
+
+    // Linear to "gamma 2" transformation
+    fn linear_to_gamma(linear_component: f64) -> f64 {
+        if linear_component > 0.0 {
+            return linear_component.sqrt();
+        }
+        0.0
     }
 }
 

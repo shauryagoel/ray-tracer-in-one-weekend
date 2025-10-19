@@ -162,3 +162,9 @@ Steps to generate a random reflected ray (which lies on the same side of hemisph
 Scattering reflected rays evenly about the hemisphere produces a good soft diffuse model, but, this is not accurate representation of the diffuse surfaces. A better representation is the **Lambertian Distribution**. This distribution scatters the reflected rays in a manner directly proportional to $\cos(\phi)$, where $\phi$ is the angle between the reflected ray and the surface normal. This means that a reflected ray is most likely to scatter in a direction near the surface normal, and less likely to scatter in directions away from the normal.
 
 To generate samples from this distribution, we add a random unit vector to the normal vector. Note that this does not produce exact Lambertian distribution.
+
+### Section 9.5
+
+The spheres generated before appears to be darker than they should be even though they have 50% reflectance. This is because computer programs assume that an image is **Gamma Corrected** before being written to an image file. Images that are stored to disk without any transformation are said to be in **Linear Space**, and images with transformations applied are said to be in **Gamma Space**. 
+
+To solve this, we apply a transform to convert our 0 to 1 image values from Linear space to Gamma space. This means taking an exponent of $1/gamma$ for each of the R, G and B components. As a simple approximation, we use the **Gamma 2** as our transform to go from gamma space to linear space. Inverse of "gamma 2" is just a square root.
