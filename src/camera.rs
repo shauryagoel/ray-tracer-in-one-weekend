@@ -118,7 +118,11 @@ impl Camera {
         let mut rec: HitRecord = Default::default();
         // Solve the "Acne Problem"
         if world.hit(r, Interval::new(0.001, f64::MAX), &mut rec) {
-            let direction = Vec3::random_on_hemisphere(&rec.normal);
+            // Simple diffue model-
+            // let direction = Vec3::random_on_hemisphere(&rec.normal);
+
+            // Lambertian Reflection-
+            let direction = rec.normal + Vec3::random_unit_vector();
             return 0.5 * self.ray_color(&Ray::new(rec.p, direction), depth - 1, world);
         }
 

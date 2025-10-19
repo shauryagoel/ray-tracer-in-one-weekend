@@ -156,3 +156,9 @@ Steps to generate a random reflected ray (which lies on the same side of hemisph
 ### Section 9.3
 
 **Shadow Acne**: Whenever a ray intersects with a surface, due to rounding errors in floating point calculation, the calculated intersection point will be slightly below the surface or above the surface. If the point is below the surface, the next ray could intersect with the surface again. To solve this temporarily, we ignore the intersection points which have $t < 0.01$.
+
+### Section 9.4
+
+Scattering reflected rays evenly about the hemisphere produces a good soft diffuse model, but, this is not accurate representation of the diffuse surfaces. A better representation is the **Lambertian Distribution**. This distribution scatters the reflected rays in a manner directly proportional to $\cos(\phi)$, where $\phi$ is the angle between the reflected ray and the surface normal. This means that a reflected ray is most likely to scatter in a direction near the surface normal, and less likely to scatter in directions away from the normal.
+
+To generate samples from this distribution, we add a random unit vector to the normal vector. Note that this does not produce exact Lambertian distribution.

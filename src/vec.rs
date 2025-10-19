@@ -60,8 +60,8 @@ impl Vec3 {
         )
     }
 
-    // Generate a random unit vector on a sphere
-    fn random_unit_vector() -> Self {
+    /// Generate a random unit vector on a sphere
+    pub fn random_unit_vector() -> Self {
         loop {
             let p = Vec3::random(-1.0, 1.0);
             let len_squared = p.length_squared();
