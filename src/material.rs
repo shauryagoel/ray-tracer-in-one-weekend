@@ -12,17 +12,23 @@ pub trait Material {
     }
 }
 
-/// Material to scatter and attenuate light accoording to it reflectance
+/// Material which scatters and attenuates light accoording to it reflectance
 #[derive(Default)]
 pub struct Lambertian {
     albedo: Color,
 }
 
-/// Material to completely reflect incident ray and attenuate light accoording to it reflectance
+/// Material which completely reflects incident ray and attenuate light accoording to it reflectance
 #[derive(Default)]
 pub struct Metal {
     albedo: Color,
     fuzz: f64, // A value between 0 and 1, indicating fuzzing magnitude
+}
+
+/// Material which refracts the light
+#[derive(Default)]
+pub struct Dielectric {
+    refraction_index: f64, // Refractive index in vacuum or air, or the ratio of the material's refractive index over the refractive index of the enclosing medium
 }
 
 impl Lambertian {
@@ -74,5 +80,34 @@ impl Material for Metal {
         *attenuation = self.albedo.clone();
         // If the ray is below the surface then, absorb the ray in the surface
         scattered.direction().dot(&rec.normal) > 0.0
+    }
+}
+
+impl Dielectric {
+    pub fn new(refraction_index: f64) -> Self {
+        Self { refraction_index }
+    }
+}
+impl Material for Dielectric {
+    fn scatter(
+        &self,
+        r_in: &Ray,
+        rec: &HitRecord,
+        attenuation: &mut Color,
+        scattered: &mut Ray,
+    ) -> bool {
+        *attenuation = Color::new(1.0, 1.0, 1.0);
+        // Refraction formula takes refraction index of incident medium in the numerator
+        let ri = if rec.front_face {
+            1.0 / self.refraction_index
+        } else {
+            self.refraction_index
+        };
+
+        let unit_direction = r_in.direction().unit_vector();
+        let refracted = unit_direction.refract(&rec.normal, ri);
+
+        *scattered = Ray::new(rec.p.clone(), refracted);
+        true
     }
 }

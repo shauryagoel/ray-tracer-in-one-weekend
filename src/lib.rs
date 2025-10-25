@@ -15,7 +15,7 @@ pub use color::Color;
 pub use hittable::{HitRecord, Hittable};
 pub use hittable_list::HittableList;
 pub use interval::Interval;
-pub use material::{Lambertian, Material, Metal};
+pub use material::{Dielectric, Lambertian, Material, Metal};
 pub use point::Point3;
 pub use ray::Ray;
 pub use sphere::Sphere;

@@ -179,3 +179,26 @@ Materials-
 
 1) **Lambertian**: They scatter light in random direction and attenuate light according to its reflectance.
 2) **Metal**: The incident ray gets reflected from the surface with angle of incidence being equal to angle of reflection.
+
+## Chapter 11
+
+The 3rd material is called **Dielectric**. They are clear materials such as water, glass, and diamond. When a light ray hits them, it splits into a reflected ray and a refracted ray. The author chooses to randomly choose between reflection and refraction, only generating one scattered ray per interaction.
+
+**Refractive Index**: This value describes how much a light (refracted ray) bends when entering a material from a vacuum. E.g.- glass has a refractive index of 1.5-1.7.
+
+**Relative Refractive Index**: When a transparent material is embedded in a different transparent material, we can describe the refraction with this value. It is calculated as- $\text{refractive index of the material}/\text{refractive index of the surrounding material}$
+
+### Chapter 11.2
+
+**Snell's Law**: It describes the refraction-
+
+$$
+\eta \cdot \sin{\theta} = \eta^{'} \cdot \sin{\theta^{'}}
+$$
+
+$$
+\begin{aligned}
+\text{where,} \quad & \theta \text{ and } \theta^{'} &\text{are the angles from the normal} \\
+                    & \eta \text{ and } \eta^{'} &\text{are the refractive indices}
+\end{aligned}
+$$
