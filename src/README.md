@@ -219,8 +219,30 @@ It can happen that (due to particular choices of refractive indices)-
 \dfrac{\eta}{\eta^{'}} \cdot \sin{\theta} > 1.0
 ```
 
-If this happens, then, refraction cannot happen and therefore the ray must reflected. This is called **Total Internal Reflection**.
+If this happens, then, refraction cannot happen and therefore the ray must be reflected. This is called **Total Internal Reflection**.
 
 ### Chapter 11.4
 
-A real glass has reflectivity that varies with angle. This can approximated by **Schlick's Approximation**.
+A real glass has reflectivity that varies with angle. This can be approximated by **Schlick's Approximation**.
+
+## Chapter 12
+
+**Field Of View** (FOV): It is the visual angle from edge to edge of the rendered image. It is different horizontally and vertically. Author chooses to always use vertical fov. It has been 90 degrees up till now.
+
+To get an arbitrary viewpoint, we require 3 things-
+
+**Lookfrom**: Camera position
+
+**Lookat**: Position of the point we look at from the camera
+
+**View Up Vector**: We need to specify orientation of the camera with respect to lookat-lookfrom axis. This is represented as an "up" vector for the camera ($vup$). We can find this vector by projecting a vector (not parallel to the view direction) onto the plane orthogonal to the view direction.
+
+We can have an orthonormal basis $(u, v, w)$ to describe our camera's orientation-
+
+$$
+\begin{aligned}
+\quad & u & \text{is an unit vector pointing to camera right} \\
+      & v & \text{is an unit vector pointing to camera up} \\
+      & w & \text{is an unit vector pointing opposite to the view direction}
+\end{aligned}
+$$

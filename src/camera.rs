@@ -1,4 +1,7 @@
-use crate::{Color, HitRecord, Hittable, HittableList, Interval, Point3, Ray, Vec3, utils};
+use crate::{
+    Color, HitRecord, Hittable, HittableList, Interval, Point3, Ray, Vec3,
+    utils::{self, degrees_to_radians},
+};
 use std::io::Write;
 
 pub struct Camera {
@@ -10,6 +13,14 @@ pub struct Camera {
     pub samples_per_pixel: usize,
     /// Max number of ray bounces into the scene
     pub max_depth: usize,
+    /// Vertical FOV (in degrees)
+    pub vfov: f64,
+    /// Point camera is looking from
+    pub lookfrom: Point3,
+    /// Point camera is looking at
+    pub lookat: Point3,
+    /// Camera-relative up direction
+    pub vup: Vec3,
     /// Stream to write the rendered image
     // pub output_stream: Box<dyn Write>,
 
@@ -25,6 +36,10 @@ pub struct Camera {
     pixel_delta_u: Vec3,
     // Offset of the pixel in the -y direction
     pixel_delta_v: Vec3,
+    // Camera frame basis vectors
+    u: Vec3,
+    v: Vec3,
+    w: Vec3,
 }
 
 impl Camera {
@@ -38,24 +53,31 @@ impl Camera {
         self.pixel_samples_scale = 1.0 / self.samples_per_pixel as f64;
 
         // Camera center
-        self.camera_center = Point3::default();
+        self.camera_center = self.lookfrom.clone();
 
         // Viewport
-        let focal_length: f64 = 1.0;
-        let vieport_height: f64 = 2.0;
+        let focal_length: f64 = (&self.lookfrom - &self.lookat).length();
+        let theta = degrees_to_radians(self.vfov);
+        let h = f64::tan(theta / 2.0);
+        let vieport_height = 2.0 * h * focal_length;
         let vieport_width: f64 = vieport_height * (image_width_f64 / image_height_f64);
 
+        // Calculate the u,v,w unit basis vectors for the camera coordinate frame
+        self.w = (&self.lookfrom - &self.lookat).unit_vector();
+        self.u = self.vup.cross(&self.w).unit_vector();
+        self.v = self.w.cross(&self.u);
+
         // Calculate the vectors across the horizontal and down the vertical viewport edges
-        let viewport_u = Vec3::new(vieport_width, 0.0, 0.0);
-        let viewport_v = Vec3::new(0.0, -vieport_height, 0.0);
+        let viewport_u = vieport_width * &self.u;
+        let viewport_v = vieport_height * (-&self.v);
 
         // Calculate the horizontal and vertical delta vectors from pixel to pixel
         self.pixel_delta_u = viewport_u.clone() / image_width_f64;
         self.pixel_delta_v = viewport_v.clone() / image_height_f64;
 
         // Calculate the location of the upper left pixel
-        let viewport_upper_left = Point3::new(0.0, 0.0, -focal_length)
-            - self.camera_center.clone()
+        let viewport_upper_left = self.camera_center.clone()
+            - focal_length * &self.w
             - viewport_u / 2.0
             - viewport_v / 2.0;
         self.pixel00_loc =
@@ -127,7 +149,7 @@ impl Camera {
 
             let mut scattered = Ray::default();
             let mut attenuation = Color::default();
-            if rec.mat.scatter(&r, &rec, &mut attenuation, &mut scattered) {
+            if rec.mat.scatter(r, &rec, &mut attenuation, &mut scattered) {
                 return attenuation * self.ray_color(&scattered, depth - 1, world);
             }
             // Ray got absorbed into the material completely, no reflection happened
@@ -149,12 +171,19 @@ impl Default for Camera {
             image_width: 100,
             samples_per_pixel: 10,
             max_depth: 10,
+            vfov: 90.0,
+            lookfrom: Point3::new(0.0, 0.0, 0.0),
+            lookat: Point3::new(0.0, 0.0, -1.0),
+            vup: Vec3::new(0.0, 1.0, 0.0),
             image_height: Default::default(),
             pixel_samples_scale: Default::default(),
             camera_center: Default::default(),
             pixel00_loc: Default::default(),
             pixel_delta_u: Default::default(),
             pixel_delta_v: Default::default(),
+            u: Default::default(),
+            v: Default::default(),
+            w: Default::default(),
         }
     }
 }
