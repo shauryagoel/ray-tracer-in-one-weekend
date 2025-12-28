@@ -1,4 +1,4 @@
-use crate::{Color, HitRecord, Ray, Vec3};
+use crate::{Color, HitRecord, Ray, Vec3, utils::random_f64};
 
 pub trait Material {
     fn scatter(
@@ -112,7 +112,8 @@ impl Material for Dielectric {
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
 
         let direction = {
-            if ri * sin_theta > 1.0 {
+            if ri * sin_theta > 1.0 || Dielectric::reflectance(cos_theta, ri) > random_f64(0.0, 1.0)
+            {
                 unit_direction.reflect(&rec.normal)
             } else {
                 unit_direction.refract(&rec.normal, ri)
@@ -121,5 +122,13 @@ impl Material for Dielectric {
 
         *scattered = Ray::new(rec.p.clone(), direction);
         true
+    }
+}
+
+impl Dielectric {
+    // Schlick's approximation for reflectance
+    fn reflectance(cosine: f64, refraction_index: f64) -> f64 {
+        let r0 = ((1.0 - refraction_index) / (1.0 + refraction_index)).powi(2);
+        r0 + (1.0 - r0) * ((1.0 - cosine).powi(5))
     }
 }

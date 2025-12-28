@@ -220,3 +220,7 @@ It can happen that (due to particular choices of refractive indices)-
 ```
 
 If this happens, then, refraction cannot happen and therefore the ray must reflected. This is called **Total Internal Reflection**.
+
+### Chapter 11.4
+
+A real glass has reflectivity that varies with angle. This can approximated by **Schlick's Approximation**.
