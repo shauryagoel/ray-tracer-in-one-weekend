@@ -198,7 +198,25 @@ $$
 
 $$
 \begin{aligned}
-\text{where,} \quad & \theta \text{ and } \theta^{'} &\text{are the angles from the normal} \\
-                    & \eta \text{ and } \eta^{'} &\text{are the refractive indices}
+\text{where,} \quad & \theta \text{ and } \theta^{'} &\text{are the angles from the normal for the incident ray and the refracted ray} \\
+                    & \eta \text{ and } \eta^{'} &\text{are the refractive indices for the incident medium and the refracted medium}
 \end{aligned}
 $$
+
+We can derive the equation of the refracted ray using this.
+
+### Chapter 11.3
+
+**Total Internal Refraction**: There are ray angles for which no solution is possible using the Snell's law. When a ray enters a medium of lower index of refraction, it can refract with an angle greater than 90 degrees.
+
+```math
+\sin{\theta^{'}} = \dfrac{\eta}{\eta^{'}} \cdot \sin{\theta}
+```
+
+It can happen that (due to particular choices of refractive indices)-
+
+```math
+\dfrac{\eta}{\eta^{'}} \cdot \sin{\theta} > 1.0
+```
+
+If this happens, then, refraction cannot happen and therefore the ray must reflected. This is called **Total Internal Reflection**.

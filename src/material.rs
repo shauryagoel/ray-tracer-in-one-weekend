@@ -98,6 +98,7 @@ impl Material for Dielectric {
     ) -> bool {
         *attenuation = Color::new(1.0, 1.0, 1.0);
         // Refraction formula takes refraction index of incident medium in the numerator
+        // So, if the incident ray comes from another medium, take inverse of the self.refraction_index
         let ri = if rec.front_face {
             1.0 / self.refraction_index
         } else {
@@ -105,9 +106,20 @@ impl Material for Dielectric {
         };
 
         let unit_direction = r_in.direction().unit_vector();
-        let refracted = unit_direction.refract(&rec.normal, ri);
 
-        *scattered = Ray::new(rec.p.clone(), refracted);
+        // Handle total internal reflection
+        let cos_theta = f64::min((-&unit_direction).dot(&rec.normal), 1.0);
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+
+        let direction = {
+            if ri * sin_theta > 1.0 {
+                unit_direction.reflect(&rec.normal)
+            } else {
+                unit_direction.refract(&rec.normal, ri)
+            }
+        };
+
+        *scattered = Ray::new(rec.p.clone(), direction);
         true
     }
 }
