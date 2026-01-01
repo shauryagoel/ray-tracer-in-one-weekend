@@ -1,5 +1,4 @@
-use crate::Interval;
-use crate::vec::Vec3;
+use crate::{Interval, utils, vec::Vec3};
 use std::io::Write;
 use std::ops::{Add, AddAssign, Mul};
 
@@ -61,6 +60,15 @@ impl Color {
             return linear_component.sqrt();
         }
         0.0
+    }
+
+    /// Generate a random color with value of all components between `min` and `max`
+    pub fn random(min: f64, max: f64) -> Self {
+        Self::new(
+            utils::random_f64(min, max),
+            utils::random_f64(min, max),
+            utils::random_f64(min, max),
+        )
     }
 }
 

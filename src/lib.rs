@@ -7,7 +7,7 @@ mod material;
 mod point;
 mod ray;
 mod sphere;
-mod utils;
+pub mod utils;
 mod vec;
 
 pub use camera::Camera;
