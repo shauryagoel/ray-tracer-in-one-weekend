@@ -21,6 +21,10 @@ pub struct Camera {
     pub lookat: Point3,
     /// Camera-relative up direction
     pub vup: Vec3,
+    /// Variation angle of rays through each pixel
+    pub defocus_angle: f64,
+    /// Distance from self.lookfrom point to the plane of perfect focus
+    pub focus_dist: f64,
     /// Stream to write the rendered image
     // pub output_stream: Box<dyn Write>,
 
@@ -40,6 +44,10 @@ pub struct Camera {
     u: Vec3,
     v: Vec3,
     w: Vec3,
+    // Defocus disk horizontal radius vector
+    defocus_disk_u: Vec3,
+    // Defocus disk vertical radius vector
+    defocus_disk_v: Vec3,
 }
 
 impl Camera {
@@ -56,10 +64,10 @@ impl Camera {
         self.camera_center = self.lookfrom.clone();
 
         // Viewport
-        let focal_length: f64 = (&self.lookfrom - &self.lookat).length();
+        // let focal_length: f64 = (&self.lookfrom - &self.lookat).length();
         let theta = degrees_to_radians(self.vfov);
         let h = f64::tan(theta / 2.0);
-        let vieport_height = 2.0 * h * focal_length;
+        let vieport_height = 2.0 * h * self.focus_dist;
         let vieport_width: f64 = vieport_height * (image_width_f64 / image_height_f64);
 
         // Calculate the u,v,w unit basis vectors for the camera coordinate frame
@@ -77,11 +85,17 @@ impl Camera {
 
         // Calculate the location of the upper left pixel
         let viewport_upper_left = self.camera_center.clone()
-            - focal_length * &self.w
+            - self.focus_dist * &self.w
             - viewport_u / 2.0
             - viewport_v / 2.0;
         self.pixel00_loc =
             viewport_upper_left + 0.5 * (self.pixel_delta_u.clone() + self.pixel_delta_v.clone());
+
+        // Calculate the camera defocus disk basis vectors
+        let defocus_radius =
+            self.focus_dist * f64::tan(utils::degrees_to_radians(self.defocus_angle / 2.0));
+        self.defocus_disk_u = self.u.clone() * defocus_radius;
+        self.defocus_disk_v = self.v.clone() * defocus_radius;
     }
 
     /// Renders the world to the `output_stream`
@@ -117,7 +131,11 @@ impl Camera {
             + ((i as f64 + offset.x()) * self.pixel_delta_u.clone())
             + ((j as f64 + offset.y()) * self.pixel_delta_v.clone());
 
-        let ray_origin = self.camera_center.clone();
+        let ray_origin = if self.defocus_angle <= 0.0 {
+            self.camera_center.clone()
+        } else {
+            self.defocus_disk_sample()
+        };
         let ray_direction = pixel_sample - ray_origin.clone();
         Ray::new(ray_origin, ray_direction)
     }
@@ -129,6 +147,13 @@ impl Camera {
             utils::random_f64(0.0, 1.0) - 0.5,
             0.0,
         )
+    }
+
+    fn defocus_disk_sample(&self) -> Point3 {
+        let p = Vec3::random_in_unit_disk();
+        self.camera_center.clone()
+            + (p.x() * self.defocus_disk_u.clone())
+            + (p.y() * self.defocus_disk_v.clone())
     }
 
     // Get the color of the closest object in the `world` when passing `ray` through the world
@@ -175,6 +200,8 @@ impl Default for Camera {
             lookfrom: Point3::new(0.0, 0.0, 0.0),
             lookat: Point3::new(0.0, 0.0, -1.0),
             vup: Vec3::new(0.0, 1.0, 0.0),
+            defocus_angle: 0.0,
+            focus_dist: 10.0,
             image_height: Default::default(),
             pixel_samples_scale: Default::default(),
             camera_center: Default::default(),
@@ -184,6 +211,8 @@ impl Default for Camera {
             u: Default::default(),
             v: Default::default(),
             w: Default::default(),
+            defocus_disk_u: Default::default(),
+            defocus_disk_v: Default::default(),
         }
     }
 }

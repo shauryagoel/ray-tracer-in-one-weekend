@@ -60,6 +60,21 @@ impl Vec3 {
         )
     }
 
+    /// Generate a random point in unit disk at z=0
+    pub fn random_in_unit_disk() -> Vec3 {
+        loop {
+            let p = Vec3::new(
+                utils::random_f64(-1.0, 1.0),
+                utils::random_f64(-1.0, 1.0),
+                0.0,
+            );
+
+            if p.length_squared() < 1.0 {
+                return p;
+            }
+        }
+    }
+
     /// Generate a random unit vector on a sphere
     pub fn random_unit_vector() -> Self {
         loop {

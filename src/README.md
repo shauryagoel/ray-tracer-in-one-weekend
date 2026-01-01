@@ -246,3 +246,13 @@ $$
       & w & \text{is an unit vector pointing opposite to the view direction}
 \end{aligned}
 $$
+
+## Chapter 13
+
+**Defocus Blur** in ray tracing is equivalent to **Depth Of Field** in photography.
+
+If there is a lens in front of camera sensor, then there will be a distance at which everything is at focus. Objects placed at that distance will appear in focus and will linearly appear blurrier the further they are from that distance.
+
+**Aperture** is a hole used to control how much light enters a camera lens. If we make the hole bigger, more light will enter and objects away from the focal distance will appear more blurry.
+
+**Focus Distance**: The distance between the camera center and the plane where everything is in perfect focus. It is not the same as **Focal Length** which is the distance between the camera center and the image plane. However, the author chose these two to have the same value.
